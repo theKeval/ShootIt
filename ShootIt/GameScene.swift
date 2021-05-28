@@ -82,8 +82,39 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemyTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true, block: {(timer) in self.createEnemy()
          })
         
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(self.swiped(gesture:)))
+        swipeUp.direction = UISwipeGestureRecognizer.Direction.up
+        self.view?.addGestureRecognizer(swipeUp)
+        
         createGrass()
         
+    }
+    
+    @objc func swiped(gesture: UIGestureRecognizer){
+        
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer{
+            
+            switch swipeGesture.direction {
+            
+//                case UISwipeGestureRecognizer.Direction.right:
+//                    print("Swipe right")
+//                    updateData()
+//
+//                case UISwipeGestureRecognizer.Direction.left:
+//                    print("Swipe left")
+//                    getData()
+                    
+                case UISwipeGestureRecognizer.Direction.up:
+                    print("Swipe Up")
+                    cowboy?.physicsBody?.applyForce(CGVector(dx:0, dy:20000))
+                    
+                    // UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
+            
+                
+                default:
+                    break
+            }
+        }
     }
     
     //Differentiate between contact and collision
