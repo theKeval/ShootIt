@@ -106,7 +106,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     
                 case UISwipeGestureRecognizer.Direction.up:
                     print("Swipe Up")
-                    cowboy?.physicsBody?.applyForce(CGVector(dx:0, dy:20000))
+                    cowboy?.physicsBody?.applyForce(CGVector(dx:0, dy:15000))
                     
                     // UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
             
