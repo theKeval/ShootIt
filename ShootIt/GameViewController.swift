@@ -19,6 +19,9 @@ class GameViewController: UIViewController {
             if let scene = SKScene(fileNamed: "GameScene") {
                 // Set the scale mode to scale to fit the window
                 scene.scaleMode = .aspectFill
+                if let gScene = scene as? GameScene {
+                    gScene.setCallback(_callback: self)
+                }
                 
                 // Present the scene
                 view.presentScene(scene)
@@ -45,5 +48,11 @@ class GameViewController: UIViewController {
 
     override var prefersStatusBarHidden: Bool {
         return true
+    }
+}
+
+extension GameViewController: CallBack {
+    func navigate() {
+        performSegue(withIdentifier: "segue_showScore", sender: self)
     }
 }

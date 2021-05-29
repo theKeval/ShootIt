@@ -7,8 +7,14 @@
 
 import SpriteKit
 import GameplayKit
+import CoreData
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
+    
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    func getContext() -> NSManagedObjectContext {
+        return appDelegate.persistentContainer.viewContext
+    }
     
     var cowboy : SKSpriteNode?
     var grass: SKSpriteNode?
@@ -295,6 +301,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bullet.run(SKAction.sequence([moveRight, SKAction.removeFromParent()]))
     }
     
+    var callback: CallBack?
+    public func setCallback(_callback: CallBack?) {
+        callback = _callback
+    }
+    
     func gameOver() {
         let gameOverLabel = SKLabelNode(fontNamed: "Chalkboard SE")
         gameOverLabel.text = "Game Over"
@@ -307,7 +318,50 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // gameOverLabel.alpha = 0.0
         // gameOverLabel.run(SKAction.fadeIn(withDuration: 2.0))
         
+        updateData()
+        if let callBack = callback {
+            callBack.navigate()
+        }
         
     }
     
+    // MARK:- Core data methods
+    
+    func updateData() {
+        let query = NSFetchRequest<NSFetchRequestResult>(entityName: "Players")
+        query.returnsObjectsAsFaults = false;
+        
+        do {
+            let results = try getContext().fetch(query)
+            
+            print("Rows found in db: " , results.count)
+            
+            if (results.count > 0) {
+                for result in results as! [NSManagedObject] {
+                    if result.value(forKey: "name") as! String == HomeViewController.currentPlayerName {
+                        result.setValue(score, forKey: "score")
+                    }
+                    
+                }
+                
+                try getContext().save()
+                print("data updated")
+            }
+            else {
+                // list = []
+                print("Nothing is found!!")
+            }
+            
+        }
+        catch {
+            print("Some error occured when updating the data!!")
+        }
+    }
+    
+    
+    
+}
+
+protocol CallBack {
+    func navigate()
 }
